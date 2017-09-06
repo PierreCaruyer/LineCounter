@@ -26,33 +26,53 @@ public class Main {
 			fis.close();
 	}
 
+	private static void usage() {
+		System.out.println("java -jar LineCounter.jar [options] [path]"
+				+ "options : "
+				+ "\n\t[--recursive | -R | --rec | -r]\n\t[--verbose | -v | -V]");
+	}
+	
 	public static void main(String[] args) throws IOException, FileNotFoundException{
 		int counter = 0;
+		File workingDirectory = null;
+		String workingDirPath = null;
 
-		if(args == null) {
-			throw new IllegalArgumentException("Unspecified directory");
-		} else if(args.length == 0) {
-			throw new IllegalArgumentException("Unspecified directory");
+		if(args == null || args.length == 0) {
+			usage();
 		} else {
 			parseArgs(Arrays.asList(args));
-			System.out.println("Counting lines in " + basePath);
+			
+			workingDirectory = new File(new File(basePath).getAbsolutePath());
+			workingDirPath = workingDirectory.getAbsolutePath();
+			
+			if(workingDirPath.charAt(workingDirPath.length() - 1) == '.') {
+				workingDirPath = workingDirPath.substring(0, workingDirPath.length() - 1);
+			}
+			if(workingDirPath.charAt(workingDirPath.length() - 1) != '/') {
+				workingDirPath = workingDirPath + '/';
+			}
+			
+			System.out.println("Counting lines in " + workingDirPath);
 			if(recursive)
-				counter = recursiveCount(basePath);
+				counter = recursiveCount(workingDirPath);
 			else
-				counter = non_recursiveCount(basePath);
+				counter = non_recursiveCount(workingDirPath);
 			System.out.println("Total lines " + counter);
 		}
 	}
 
 	private static void parseArgs(List<String> args) {
-
 		basePath = args.get(args.size() - 1);
-		if(args.contains("--verbose") || args.contains("-v"))
-			verbose = true;
-		if(args.contains("-V"))
-			verbose = u_verbose = true;
-		if(args.contains("--recursive") || args.contains("-r") || args.contains("-R") || args.contains("--rec"))
-			recursive = true;
+		if(args.contains("-h") || args.contains("--help")) {
+			usage();
+		} else {
+			if(args.contains("--verbose") || args.contains("-v"))
+				verbose = true;
+			if(args.contains("-V"))
+				verbose = u_verbose = true;
+			if(args.contains("--recursive") || args.contains("-r") || args.contains("-R") || args.contains("--rec"))
+				recursive = true;
+		}
 	}
 
 	private static int recursiveCount(String path) throws IOException {
