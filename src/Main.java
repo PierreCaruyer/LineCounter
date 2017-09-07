@@ -15,6 +15,7 @@ public class Main {
 	private static boolean recursive = false;
 	private static boolean verbose = false;
 	private static boolean u_verbose = false;
+	private static boolean timer = false;
 
 	private static void CloseInputStream(FileInputStream fis, InputStreamReader isr, BufferedReader reader) throws IOException
 	{
@@ -29,14 +30,15 @@ public class Main {
 	private static void usage() {
 		System.out.println("java -jar LineCounter.jar [options] [path]"
 				+ "options : "
-				+ "\n\t[--recursive | -R | --rec | -r]\n\t[--verbose | -v | -V]");
+				+ "\n\t[ -r | --recursive ]\n\t[ -v | --verbose ]\n\t");
 	}
 	
 	public static void main(String[] args) throws IOException, FileNotFoundException{
 		int counter = 0;
+		long start_time = 0, end_time = 0;
 		File workingDirectory = null;
 		String workingDirPath = null;
-
+		
 		if(args == null || args.length == 0) {
 			usage();
 		} else {
@@ -52,12 +54,18 @@ public class Main {
 				workingDirPath = workingDirPath + '/';
 			}
 			
-			System.out.println("Counting lines in " + workingDirPath);
+			System.out.println("Counting lines from " + workingDirPath);
+			start_time = System.currentTimeMillis();
 			if(recursive)
 				counter = recursiveCount(workingDirPath);
 			else
 				counter = non_recursiveCount(workingDirPath);
+			end_time = System.currentTimeMillis();
 			System.out.println("Total lines " + counter);
+			if(timer) {
+				System.out.println("Duration " + ((end_time - start_time) / 1000) + "." + ((end_time - start_time) % 1000) + " seconds");
+				System.out.println("Counted " + (counter / ((end_time - start_time) / 1000)) + " lines / sec");
+			}
 		}
 	}
 
@@ -72,6 +80,8 @@ public class Main {
 				verbose = u_verbose = true;
 			if(args.contains("--recursive") || args.contains("-r") || args.contains("-R") || args.contains("--rec"))
 				recursive = true;
+			if(args.contains("-t"))
+				timer = true;
 		}
 	}
 
