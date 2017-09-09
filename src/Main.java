@@ -30,7 +30,7 @@ public class Main {
 	private static void usage() {
 		System.out.println("java -jar LineCounter.jar [options] [path]"
 				+ "options : "
-				+ "\n\t[ -r | --recursive ]\n\t[ -v | --verbose ]\n\t");
+				+ "\n\t[ -r | --recursive ]\n\t[ -v | --verbose ]\n\t[ --timer ]");
 	}
 	
 	public static void main(String[] args) throws IOException, FileNotFoundException{
@@ -80,7 +80,7 @@ public class Main {
 				verbose = u_verbose = true;
 			if(args.contains("--recursive") || args.contains("-r") || args.contains("-R") || args.contains("--rec"))
 				recursive = true;
-			if(args.contains("-t"))
+			if(args.contains("-t") || args.contains("--timer"))
 				timer = true;
 		}
 	}
