@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -17,23 +16,13 @@ public class Main {
 	private static boolean u_verbose = false;
 	private static boolean timer = false;
 
-	private static void CloseInputStream(FileInputStream fis, InputStreamReader isr, BufferedReader reader) throws IOException
-	{
-		if(reader != null)
-			reader.close();
-		if(isr != null)
-			isr.close();
-		if(fis != null)
-			fis.close();
-	}
-
 	private static void usage() {
 		System.out.println("java -jar LineCounter.jar [options] [path]"
 				+ "options : "
 				+ "\n\t[ -r | --recursive ]\n\t[ -v | --verbose ]\n\t[ --timer ]");
 	}
 	
-	public static void main(String[] args) throws IOException, FileNotFoundException{
+	public static void main(String[] args) {
 		int counter = 0;
 		long start_time = 0, end_time = 0;
 		File workingDirectory = null;
@@ -69,7 +58,7 @@ public class Main {
 		}
 	}
 
-	private static void parseArgs(List<String> args) {
+	private static void parseArgs(final List<String> args) {
 		basePath = args.get(args.size() - 1);
 		if(args.contains("-h") || args.contains("--help")) {
 			usage();
@@ -85,11 +74,10 @@ public class Main {
 		}
 	}
 
-	private static int recursiveCount(String path) throws IOException {
+	private static int recursiveCount(final String path) {
 		int count = 0;
 
-		File file = new File(path);
-		if(file.isDirectory()) {
+		if(new File(path).isDirectory()) {
 			if(recursive) {
 				Iterator<File> dir = subDirs(path);
 				while(dir.hasNext()) {
@@ -99,9 +87,7 @@ public class Main {
 					count += recursiveCount(path + name + "/");
 				}
 			}
-			Iterator<File> f = dirFiles(path);
-			while(f.hasNext())
-				count += getFileLines(new File(path + f.next().getName()));
+			count += non_recursiveCount(path);
 		}
 		else
 			count += getFileLines(new File(path));
@@ -109,33 +95,42 @@ public class Main {
 		return count;
 	}
 
-	private static int non_recursiveCount(String path) throws IOException {
-		int count = 0;
-		Iterator<File> f = dirFiles(path);
-		while(f.hasNext())
-			count += getFileLines(new File(path + f.next().getName()));
-		return count;
+	private static int non_recursiveCount(final String path) {
+		return directoryLines(dirFiles(path), 0);
 	}
-
-	private static int getFileLines(File file) throws IOException {
+	
+	private static int directoryLines(final Iterator<File> files, int currentCount) {
+		return (files.hasNext()) ? directoryLines(files, currentCount + getFileLines(files.next())) : currentCount;
+	}
+	
+	private static int getFileLines(final File file) {
 		int count = 0;
-		String newLine;
-		FileInputStream fis = new FileInputStream(file);
-		InputStreamReader isr = new InputStreamReader(fis);
-		BufferedReader reader = new BufferedReader(isr);
-		while((newLine = reader.readLine()) != null)
-		{
-			count++;
-			if(u_verbose)
-				System.out.println(newLine);
+		try {
+			String newLine;
+			FileInputStream fis = new FileInputStream(file);
+			InputStreamReader isr = new InputStreamReader(fis);
+			BufferedReader reader = new BufferedReader(isr);
+			while((newLine = reader.readLine()) != null)
+			{
+				count++;
+				if(u_verbose)
+					System.out.println(newLine);
+			}
+			if(reader != null)
+				reader.close();
+			if(isr != null)
+				isr.close();
+			if(fis != null)
+				fis.close();
+			if(verbose)
+				System.out.println(file.getAbsolutePath() + " : " + count + " lines");
+		} catch(IOException ioe) {
+			ioe.printStackTrace();
 		}
-		CloseInputStream(fis, isr, reader);
-		if(verbose)
-			System.out.println(file.getAbsolutePath() + " : " + count + " lines");
 		return count;
 	}
 
-	private static Iterator<File> subDirs(String path) {
+	private static Iterator<File> subDirs(final String path) {
 		File dir = new File(path);
 		if(!dir.exists()) {
 			System.out.println("Dir does not exits");
@@ -151,12 +146,12 @@ public class Main {
 		return dirs.iterator();
 	}
 
-	private static Iterator<File> dirFiles(String path) {
-		File dir = new File(path);
-		if(!dir.exists()) {
-			System.out.println("Dir does not exits");
-			return null;
-		}
+	private static Iterator<File> dirFiles(final String path) {
+		final File dir = new File(path);
+		
+		if(!dir.exists())
+			System.err.println(path + " not found.");;
+
 		List<File> dirs = new ArrayList<>();
 
 		File[] files = dir.listFiles();
