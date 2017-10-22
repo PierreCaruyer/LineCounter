@@ -13,7 +13,7 @@ public class Main {
 	private static String basePath = "";
 	private static boolean recursive = false;
 	private static boolean verbose = false;
-	private static boolean u_verbose = false;
+	private static boolean ultimate_verbose = false;
 	private static boolean timer = false;
 
 	private static void usage() {
@@ -50,10 +50,11 @@ public class Main {
 			else
 				counter = non_recursiveCount(workingDirPath);
 			end_time = System.currentTimeMillis();
-			System.out.println("Total lines " + counter);
-			if(timer) {
-				System.out.println("Duration " + ((end_time - start_time) / 1000) + "." + ((end_time - start_time) % 1000) + " seconds");
-				//System.out.println("Counted " + (counter / ((end_time - start_time) / 1000)) + " lines / sec");
+			if(!timer) {
+				System.out.println("Total lines " + counter);
+			} else {
+				System.out.println("LineCounter has gone through " + counter + " lines in " + ((end_time - start_time) / 1000) + "." + ((end_time - start_time) % 1000) + " seconds");
+				System.out.println("Counted " + (counter / ((end_time - start_time) / 1000)) + " lines / sec");
 			}
 		}
 	}
@@ -66,7 +67,7 @@ public class Main {
 			if(args.contains("--verbose") || args.contains("-v"))
 				verbose = true;
 			if(args.contains("-V"))
-				verbose = u_verbose = true;
+				verbose = ultimate_verbose = true;
 			if(args.contains("--recursive") || args.contains("-r") || args.contains("-R") || args.contains("--rec"))
 				recursive = true;
 			if(args.contains("-t") || args.contains("--timer"))
@@ -113,7 +114,7 @@ public class Main {
 			while((newLine = reader.readLine()) != null)
 			{
 				count++;
-				if(u_verbose)
+				if(ultimate_verbose)
 					System.out.println(newLine);
 			}
 			if(reader != null)
