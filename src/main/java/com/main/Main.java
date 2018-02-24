@@ -1,14 +1,15 @@
 package com.main;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Main {
 
@@ -67,7 +68,7 @@ public class Main {
 	private static int recursiveCount(final String path) {
 		if(new File(path).isFile())
 			return getFileLines(new File(path));
-
+		
 		int count = 0;
 		Iterator<File> dir = subDirs(path);
 		while(dir.hasNext()) {
@@ -75,6 +76,7 @@ public class Main {
 			if(verbose)
 				System.out.println("Entering dir : " + path + name + "/ ...");
 			count += recursiveCount(path + name + "/");
+			System.out.println("Counted " + count + " lines.");
 		}
 		count += directoryLines(dirFiles(path), 0);
 		return count;
@@ -85,12 +87,17 @@ public class Main {
 	}
 	
 	private static int getFileLines(final File file) {
-		try (Stream<String> stream = Files.lines(Paths.get(file.getAbsolutePath()))) {
-			return stream.collect(Collectors.toList()).size();
-		}catch(IOException e){
+		int count = 0;
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+			for(;reader.readLine() != null; ++count);
+			reader.close();
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+		} catch(IOException ioe) {
+			ioe.printStackTrace();
 		}
-		return 0;
+		return count;
 	}
 
 	private static Iterator<File> subDirs(final String path) {
