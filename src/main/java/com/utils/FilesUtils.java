@@ -20,9 +20,13 @@ public class FilesUtils {
             return Collections.emptyList();
         }
         final File file = new File(path);
-        return Arrays.stream(file.listFiles())
-                        .filter(File::isDirectory)
-                        .collect(Collectors.toList());
+        final File[] files = file.listFiles();
+        if(files == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(files)
+                    .filter(File::isDirectory)
+                    .collect(Collectors.toList());
     }
 
     @Contract("null -> !null")
@@ -35,9 +39,13 @@ public class FilesUtils {
             return Collections.emptyList();
         }
         final File file = new File(path);
-        return Arrays.stream(file.listFiles())
-                        .filter(File::isFile)
-                        .collect(Collectors.toList());
+        final File[] files = file.listFiles();
+        if(files == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(files)
+                    .filter(File::isFile)
+                    .collect(Collectors.toList());
     }
 
     static public final boolean fileExists(final String filePath) {
@@ -50,6 +58,9 @@ public class FilesUtils {
    }
 
     static public final int getFileLines(final File file) {
+        if(!fileExists(file) || !file.isFile()) {
+            return 0;
+        }
         int count = 0;
         try {
             final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));

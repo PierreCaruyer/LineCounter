@@ -10,5 +10,5 @@ abstract public class AFileLineCounter {
         this.file = file;
     }
 
-    abstract int count();
+    public abstract int count();
 }

@@ -18,6 +18,7 @@ public class RecursiveFileLineCounter extends AFileLineCounter {
         this(new File(filepath), isVerbose);
     }
 
+    @Override
     public int count() {
         if(!FilesUtils.fileExists(file)) {
             return 0;
@@ -30,15 +31,12 @@ public class RecursiveFileLineCounter extends AFileLineCounter {
             return 0;
         }
         int count = 0;
-        final Iterator<File> dir = dirCollection.iterator();
-        while(dir.hasNext()) {
-            final String name = dir.next().getName();
-            final String nextFileAbsolutePath = file.getAbsolutePath() + "/" + name + "/";
-            if(isVerbose) {
-                System.out.println("Entering dir : " + nextFileAbsolutePath + " ...");
+        for(final File aDirFile : dirCollection) {
+            if (isVerbose) {
+                System.out.println("Entering dir : " + aDirFile.getAbsolutePath() + " ...");
                 System.out.println("Counted " + count + " lines.");
             }
-            final AFileLineCounter subCounter = new RecursiveFileLineCounter(nextFileAbsolutePath, isVerbose);
+            final AFileLineCounter subCounter = new RecursiveFileLineCounter(aDirFile, isVerbose);
             count += subCounter.count();
         }
         return count + directoryLines(FilesUtils.dirFiles(file));
