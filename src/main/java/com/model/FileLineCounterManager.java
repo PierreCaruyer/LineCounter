@@ -1,5 +1,7 @@
 package com.model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 
 public class FileLineCounterManager {
@@ -7,11 +9,11 @@ public class FileLineCounterManager {
     private final File file;
     private final boolean recursive, verbose;
 
+    @NotNull
     public final AFileLineCounter getInstance() {
-        final AFileLineCounter lineCounter = recursive ?
+        return recursive ?
                 new RecursiveFileLineCounter(file, verbose) :
                 new BasicLineCounter(file);
-        return lineCounter;
     }
 
     public FileLineCounterManager(final File file, final boolean recursive, final boolean verbose) {

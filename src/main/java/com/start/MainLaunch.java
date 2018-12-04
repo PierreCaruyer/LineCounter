@@ -21,13 +21,11 @@ public class MainLaunch {
 			usage();
 			return;
 		}
-		final String basePath = args[args.length - 1];
-		final File workingDirectory = new File(new File(basePath).getAbsolutePath());
-		final String workingDirPath = workingDirectory.getAbsolutePath();
-		final String formattedDirPath = workingDirPath.endsWith("/") ? workingDirPath : workingDirPath + '/';
+		final String basePath = parser.getPath();
+		final File file = new File(basePath);
 
-		System.out.println("Counting lines from " + formattedDirPath);
-		final AFileLineCounter lineCounter = new FileLineCounterManager(new File(formattedDirPath), parser.isRecursive(), parser.isVerboseActive()).getInstance();
+		System.out.println("Counting lines from " + basePath);
+		final AFileLineCounter lineCounter = new FileLineCounterManager(file, parser.isRecursive(), parser.isVerboseActive()).getInstance();
 		final long start_time = System.currentTimeMillis();
 		final int counter = lineCounter.count();
 		final long end_time = System.currentTimeMillis();

@@ -9,13 +9,9 @@ import java.util.Iterator;
 public class RecursiveFileLineCounter extends AFileLineCounter {
     private final boolean isVerbose;
 
-    public RecursiveFileLineCounter(final File file, final boolean isVerbose) {
+    RecursiveFileLineCounter(final File file, final boolean isVerbose) {
         super(file);
         this.isVerbose = isVerbose;
-    }
-
-    public RecursiveFileLineCounter(final String filepath, final boolean isVerbose) {
-        this(new File(filepath), isVerbose);
     }
 
     @Override

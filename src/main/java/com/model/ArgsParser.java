@@ -9,6 +9,7 @@ public class ArgsParser {
 
     private final List<String> args;
     private boolean timer = false, verbose = false, helpActive = false, nullOrEmpty = false, recursive = false;
+    private String path = null;
 
     public ArgsParser(final String ... args) {
         this(Arrays.asList(args));
@@ -21,6 +22,7 @@ public class ArgsParser {
     public ArgsParser parse() {
         if(args == null || args.size() == 0) {
             nullOrEmpty = true;
+            return this;
         }
         if(args.contains("-h") || args.contains("--help")) {
             helpActive = true;
@@ -34,6 +36,7 @@ public class ArgsParser {
         if(args.contains("-r") || args.contains("--recursive")) {
             recursive = true;
         }
+        path = args.get(args.size() - 1);
         return this;
     }
 
@@ -60,5 +63,9 @@ public class ArgsParser {
     @Contract(pure = true)
     public final boolean isRecursive() {
         return recursive;
+    }
+
+    public final String getPath() {
+        return path;
     }
 }
