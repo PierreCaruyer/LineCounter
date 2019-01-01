@@ -19,6 +19,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.main.DummyMain</groupId>
+			<artifactId>Utilities</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
 			<version>RELEASE</version>
