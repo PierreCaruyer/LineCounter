@@ -1,8 +1,9 @@
 package com.model;
 
+import com.utils.ArraysUtils;
+import com.utils.CollectionsUtils;
 import org.jetbrains.annotations.Contract;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ArgsParser {
@@ -12,7 +13,7 @@ public class ArgsParser {
     private String path = null;
 
     public ArgsParser(final String ... args) {
-        this(Arrays.asList(args));
+        this(new ArraysUtils<>(args).asList());
     }
 
     public ArgsParser(final List<String> args) {
@@ -20,7 +21,7 @@ public class ArgsParser {
     }
 
     public ArgsParser parse() {
-        if(args == null || args.size() == 0) {
+        if(CollectionsUtils.isEmpty(args)) {
             nullOrEmpty = true;
             return this;
         }

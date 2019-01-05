@@ -16,7 +16,7 @@ public class BasicLineCounter extends AFileLineCounter {
             return 0;
         }
         if(file.isFile()) {
-            return FilesUtils.getFileLines(file);
+            return FilesUtils.getFileLinesCount(file);
         }
         final Collection<File> dirCollection = FilesUtils.subDirs(file);
         if(dirCollection == null) {
@@ -25,7 +25,7 @@ public class BasicLineCounter extends AFileLineCounter {
         int count = 0;
         for(final File aDirFile : dirCollection) {
             System.out.println("Entering dir : " + aDirFile.getAbsolutePath() + " ...");
-            count += FilesUtils.getFileLines(aDirFile);
+            count += FilesUtils.getFileLinesCount(aDirFile);
             System.out.println("Counted " + count + " lines.");
         }
         return count;

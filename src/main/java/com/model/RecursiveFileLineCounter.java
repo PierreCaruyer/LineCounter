@@ -20,7 +20,7 @@ public class RecursiveFileLineCounter extends AFileLineCounter {
             return 0;
         }
         if(file.isFile()) {
-            return FilesUtils.getFileLines(file);
+            return FilesUtils.getFileLinesCount(file);
         }
         final Collection<File> dirCollection = FilesUtils.subDirs(file);
         if(dirCollection == null) {
@@ -53,6 +53,6 @@ public class RecursiveFileLineCounter extends AFileLineCounter {
         if(filesIterator == null) {
             return 0;
         }
-        return (filesIterator.hasNext()) ? directoryLinesHelper(filesIterator, currentCount + FilesUtils.getFileLines(filesIterator.next())) : currentCount;
+        return (filesIterator.hasNext()) ? directoryLinesHelper(filesIterator, currentCount + FilesUtils.getFileLinesCount(filesIterator.next())) : currentCount;
     }
 }
